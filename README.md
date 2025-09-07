@@ -13,7 +13,7 @@
     <a href="#recursos">Recursos</a> •
     <a href="#tecnologias-utilizadas">Tecnologias Utilizadas</a> •
     <a href="#como-executar-localmente">Como Executar </a> •
-    <a href="#licença">Licença</a>
+   <!-- <a href="#licença">Licença</a> -->
   </p>
 </div>
  
