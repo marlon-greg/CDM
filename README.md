@@ -17,32 +17,32 @@
   </p>
 </div>
  
-## 🚀 Visão Geral
+## Visão Geral
  
 Este é o repositório do site institucional da **CDM Soluções em TI**, uma landing page moderna e responsiva desenvolvida para apresentar a empresa, seus valores e portfólio de serviços.
  
 O projeto foi construído com **Vue.js 3** e **Vite**, garantindo uma experiência de desenvolvimento ágil e um resultado final performático para o usuário.
  
 <!--
-## 🌐 Deploy
+##  Deploy
 
 Acesse a versão ao vivo do projeto em: **[seusite.com.br](https://seusite.com.br)**
 -->
 
-## ✨ Recursos
+## Recursos
 
 - **Design Responsivo:** Interface totalmente adaptável para desktops, tablets e dispositivos móveis.
 - **Animações Sutis:** Efeitos de fade-in ao rolar a página para uma experiência de usuário mais fluida e agradável.
 - **Componente Único:** Estrutura simplificada utilizando um único componente Vue para toda a aplicação.
 - **Performance Otimizada:** Build rápido e eficiente graças ao Vite.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Vue.js 3:** Framework progressivo para construção de interfaces de usuário.
 - **Vite:** Ferramenta de build moderna e rápida para desenvolvimento web.
 - **TypeScript:** Superset do JavaScript que adiciona tipagem estática.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 O projeto adota uma abordagem minimalista, concentrando toda a lógica e template da aplicação em um único arquivo, o que facilita a manutenção para uma landing page.
 
@@ -61,7 +61,7 @@ CDM/
 
 > **Nota:** O arquivo principal da aplicação está nomeado como `index.tsx`, mas contém código Vue (Options API) e não JSX. O ponto de entrada em `index.html` aponta para `src/main.ts`. Certifique-se de que `main.ts` está importando e montando corretamente o componente definido em `index.tsx`.
 
-## ⚙️ Como Executar Localmente
+## Como Executar Localmente
 
 **Pré-requisitos:** Node.js instalado.
 
@@ -82,7 +82,8 @@ CDM/
    ```
 
 Após executar o último comando, acesse o endereço local (geralmente `http://localhost:5173`) que aparecerá no seu terminal para visualizar o site.
-
+<!--
 ## 📄 Licença
 
 Este projeto não possui uma licença definida. Recomendo adicionar um arquivo `LICENSE` para esclarecer os termos de uso do código.
+-->
