@@ -719,6 +719,11 @@ footer .container {
 
 /* --- Media Queries (Responsividade) --- */
 @media (max-width: 768px) {
+  body {
+    /* Impede o scroll horizontal apenas em telas menores */
+    overflow-x: hidden;
+  }
+
   .hero-content h1 {
     font-size: 2.5rem;
     white-space: normal; /* Permite que o texto quebre em telas menores */
