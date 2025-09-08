@@ -33,7 +33,7 @@ Acesse a versão ao vivo do projeto em: **[seusite.com.br](https://seusite.com.b
 
 - **Design Responsivo:** Interface totalmente adaptável para desktops, tablets e dispositivos móveis.
 - **Animações Sutis:** Efeitos de fade-in ao rolar a página para uma experiência de usuário mais fluida e agradável.
-- **Componente Único:** Estrutura simplificada utilizando um único componente Vue para toda a aplicação.
+- **Arquitetura Baseada em Componentes:** O projeto utiliza Single File Components (SFCs) do Vue para uma organização clara e modular.
 - **Performance Otimizada:** Build rápido e eficiente graças ao Vite.
 
 ## Tecnologias Utilizadas
@@ -44,19 +44,34 @@ Acesse a versão ao vivo do projeto em: **[seusite.com.br](https://seusite.com.b
 
 ## Estrutura do Projeto
 
-O projeto adota uma abordagem minimalista, concentrando toda a lógica e template da aplicação em um único arquivo, o que facilita a manutenção para uma landing page.
+O projeto segue a estrutura padrão recomendada para aplicações Vue 3 com Vite, garantindo escalabilidade e manutenibilidade.
 
 ```
 CDM/
-├── public/
-│   └── assets/
-│       └── logo.jpeg
-├── src/
-│   └── main.ts         # Ponto de entrada da aplicação
-├── index.html          # Arquivo HTML principal
-├── index.tsx           # Componente principal Vue com toda a estrutura
-├── package.json
-└── README.md
+├── node_modules/         # Dependências do projeto instaladas pelo npm/yarn
+├── public/               # Arquivos estáticos que são copiados diretamente para a raiz do build
+│   └── favicon.ico       # Exemplo: ícone do site
+├── src/                  # Código-fonte da aplicação
+│   ├── assets/           # Ativos estáticos (imagens, fontes, etc.) que são processados pelo bundler
+│   │   ├── celso.png
+│   │   ├── daniel.png
+│   │   ├── logo_old.jpeg
+│   │   ├── logo.png
+│   │   └── marlon.png
+│   ├── components/       # Componentes Vue reutilizáveis
+│   │   └── Sobre.vue     # Exemplo: Componente para a seção "Sobre" ou "Equipe"
+│   ├── App.vue           # Componente raiz da aplicação Vue
+│   ├── index.css         # Estilos globais da aplicação
+│   └── main.ts           # Ponto de entrada da aplicação TypeScript (monta o App.vue)
+├── .env.local            # Variáveis de ambiente locais (não versionadas)
+├── .gitignore            # Arquivos e diretórios a serem ignorados pelo Git
+├── index.html            # Arquivo HTML principal (template para o SPA)
+├── package-lock.json     # Garante versões exatas das dependências (gerado automaticamente)
+├── package.json          # Metadados do projeto e scripts npm/yarn
+├── README.md             # Este arquivo README
+├── tsconfig.json         # Configurações do TypeScript para o código-fonte
+├── tsconfig.node.json    # Configurações do TypeScript para arquivos Node.js (ex: vite.config.ts)
+└── vite.config.ts        # Configuração do bundler Vite
 ```
 
 > **Nota:** O arquivo principal da aplicação está nomeado como `index.tsx`, mas contém código Vue (Options API) e não JSX. O ponto de entrada em `index.html` aponta para `src/main.ts`. Certifique-se de que `main.ts` está importando e montando corretamente o componente definido em `index.tsx`.
@@ -82,6 +97,7 @@ CDM/
    ```
 
 Após executar o último comando, acesse o endereço local (geralmente `http://localhost:5173`) que aparecerá no seu terminal para visualizar o site.
+
 <!--
 ## 📄 Licença
 
