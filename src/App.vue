@@ -3,9 +3,11 @@ import { ref, onMounted } from "vue";
 import Sobre from "@/components/Sobre.vue";
 import logoUrl from "./assets/logo.png";
 
-// Gerencia o estado de abertura do menu de navegação em dispositivos móveis.
+// Gerencia o estado do menu de navegação e do formulário de contato.
 const isMenuOpen = ref(false);
+const isContactFormOpen = ref(false);
 
+// Funções para controlar a visibilidade do menu e do formulário.
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
@@ -13,7 +15,14 @@ function closeMenu() {
   isMenuOpen.value = false;
 }
 
-// Define os dados para a seção de portfólio, que serão renderizados dinamicamente.
+function openContactForm() {
+  isContactFormOpen.value = true;
+}
+function closeContactForm() {
+  isContactFormOpen.value = false;
+}
+
+// Dados para a seção de portfólio.
 const portfolio = ref([
   {
     client: "Empresa de Logística Exemplo",
@@ -33,7 +42,7 @@ const portfolio = ref([
   },
 ]);
 
-// Cria uma diretiva customizada (v-fade-in) para aplicar animações de fade-in aos elementos quando eles entram na tela.
+// Diretiva customizada para animação de fade-in ao rolar a página.
 const vFadeIn = {
   mounted: (el: HTMLElement) => {
     el.classList.add("fade-in");
@@ -56,9 +65,40 @@ const vFadeIn = {
 </script>
 
 <template>
+  <div id="top-bar">
+    <div class="container">
+      <span class="social-follow-text">Sigam-nos nas redes sociais</span>
+      <div class="social-media-bar">
+        <a href="#" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+            alt="LinkedIn"
+          />
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" title="Instagram">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+            alt="Instagram"
+          />
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" title="Facebook">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
+            alt="Facebook"
+          />
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
+            alt="TikTok"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
   <header id="header">
     <nav class="container">
-      <a href="#hero" class="logo-link" @click="closeMenu">
+      <a href="#top-bar" class="logo-link" @click="closeMenu">
         <img src="./assets/logo.png" alt="CDM IT Logo" class="logo" />
       </a>
       <button
@@ -164,8 +204,9 @@ const vFadeIn = {
             <p>
               Construímos soluções digitais escaláveis e intuitivas, incluindo
               sites dinâmicos, progressive web apps (PWAs), sistemas de ponto de
-              venda e aplicações de negócios personalizadas para suas
-              necessidades operacionais específicas.
+              venda, sistemas de automação residencial (domótica) e aplicações
+              de negócios personalizadas para suas necessidades operacionais
+              específicas.
             </p>
           </div>
           <div class="service-card">
@@ -249,9 +290,10 @@ const vFadeIn = {
             <h3>Infraestrutura de TI</h3>
             <p>
               Projetamos e gerenciamos ambientes de TI robustos. Nossos serviços
-              incluem instalação de redes, sistemas de controle de acesso seguro
-              (biometria, facial), configuração de servidores e monitoramento
-              contínuo para garantir o desempenho ideal.
+              incluem instalação de redes, integração de dispositivos de
+              domótica, sistemas de controle de acesso seguro (biometria,
+              facial), configuração de servidores e monitoramento contínuo para
+              garantir o desempenho ideal.
             </p>
           </div>
           <div class="service-card">
@@ -342,9 +384,9 @@ const vFadeIn = {
           Vamos conversar sobre como nossas soluções de TI podem ajudá-lo a
           alcançar seus objetivos. Entre em contato hoje para uma consulta.
         </p>
-        <a href="https://wa.me/5511987654321" class="cta-button" target="_blank"
-          >Entre em Contato</a
-        >
+        <button @click="openContactForm" class="cta-button">
+          Entre em Contato
+        </button>
       </div>
     </section>
   </main>
@@ -352,6 +394,92 @@ const vFadeIn = {
   <footer>
     <div class="container">
       <p>&copy; 2025 CDM Soluções em TI. Todos os Direitos Reservados.</p>
+      <div class="footer-socials">
+        <span class="social-follow-text">Sigam-nos nas redes sociais</span>
+        <div class="social-media-bar">
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="LinkedIn"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+              alt="LinkedIn"
+            />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+              alt="Instagram"
+            />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Facebook"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
+              alt="Facebook"
+            />
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
+              alt="TikTok"
+            />
+          </a>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <!-- Contact Form Modal -->
+  <div
+    v-if="isContactFormOpen"
+    class="contact-form-overlay"
+    @click.self="closeContactForm"
+  >
+    <div class="contact-form-modal">
+      <button
+        @click="closeContactForm"
+        class="close-modal-btn"
+        aria-label="Fechar formulário"
+      >
+        &times;
+      </button>
+      <h3>Fale Conosco</h3>
+      <p>Preencha o formulário abaixo e retornaremos em breve.</p>
+      <form
+        action="mailto:contato@cdmti.com.br"
+        method="post"
+        enctype="text/plain"
+      >
+        <div class="form-group">
+          <label for="fullName">Nome Completo</label>
+          <input type="text" id="fullName" name="Nome" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="Email" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Telefone</label>
+          <input type="tel" id="phone" name="Telefone" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Descrição simples (Opcional)</label>
+          <textarea id="message" name="Mensagem" rows="4"></textarea>
+        </div>
+        <button type="submit" class="cta-button">Enviar Mensagem</button>
+      </form>
+    </div>
+  </div>
 </template>

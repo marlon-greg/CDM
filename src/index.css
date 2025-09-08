@@ -1,7 +1,7 @@
-/* --- CSS Variables and Reset --- */
+/* --- Variáveis CSS e Reset --- */
 :root {
-  --primary-dark: #3e4a59; /* Dark Gray from logo */
-  --primary-accent: #2da9b0; /* Teal from logo */
+  --primary-dark: #3e4a59;
+  --primary-accent: #2da9b0;
   --primary-light: #ffffff;
   --secondary-gray: #6c757d;
   --background-color: #f8f9fa;
@@ -27,14 +27,27 @@ body {
   line-height: 1.6;
 }
 
-/* --- Utility Classes --- */
+/* --- Classes Utilitárias --- */
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* --- Header & Navigation --- */
+/* --- Barra Superior --- */
+#top-bar {
+  background-color: var(--primary-dark);
+  padding: 8px 0;
+}
+
+#top-bar .container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+}
+
+/* --- Cabeçalho e Navegação --- */
 #header {
   position: sticky;
   top: 0;
@@ -91,7 +104,7 @@ body {
   width: 100%;
 }
 
-/* --- Hero Section --- */
+/* --- Seção Hero --- */
 #hero {
   display: flex;
   align-items: center;
@@ -146,7 +159,7 @@ body {
   box-shadow: 0 6px 15px rgba(45, 169, 176, 0.5);
 }
 
-/* --- General Section Styling --- */
+/* --- Estilização Geral das Seções --- */
 section {
   padding: 80px 0;
 }
@@ -172,7 +185,7 @@ section h2::after {
   border-radius: 2px;
 }
 
-/* --- About Section --- */
+/* --- Seção Sobre --- */
 #about {
   background-color: var(--primary-light);
 }
@@ -196,7 +209,7 @@ section h2::after {
   opacity: 0.8;
 }
 
-/* --- Team/Founders Section (from Sobre.vue) --- */
+/* --- Seção Equipe/Fundadores (do Sobre.vue) --- */
 #about .team-section {
   padding-top: 60px;
 }
@@ -300,11 +313,10 @@ section h2::after {
 
 #about .icon-wrapper {
   flex-shrink: 0;
-  color: #a0a0a0;
   opacity: 0.7;
 }
 
-#about .icon-wrapper svg {
+#about .icon-wrapper .icon-img {
   width: 24px;
   height: 24px;
 }
@@ -331,7 +343,7 @@ section h2::after {
   height: 38px;
 }
 
-/* --- Portfolio Section --- */
+/* --- Seção Portfólio --- */
 #portfolio {
   background-color: var(--primary-light);
 }
@@ -390,7 +402,7 @@ section h2::after {
   text-decoration: underline;
 }
 
-/* --- Services Section --- */
+/* --- Seção Serviços --- */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -427,7 +439,7 @@ section h2::after {
   font-size: 0.95rem;
 }
 
-/* --- Contact Section --- */
+/* --- Seção Contato --- */
 #contact {
   text-align: center;
 }
@@ -439,15 +451,159 @@ section h2::after {
   color: var(--secondary-gray);
 }
 
-/* --- Footer --- */
+/* --- Rodapé --- */
 footer {
   background-color: var(--primary-dark);
   color: var(--primary-light);
-  text-align: center;
   padding: 20px 0;
 }
 
-/* --- Scroll Animations --- */
+/* --- Modal do Formulário de Contato --- */
+.contact-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.contact-form-modal {
+  background-color: var(--primary-light);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: slide-down 0.4s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.close-modal-btn:hover {
+  color: var(--primary-dark);
+}
+
+.contact-form-modal h3 {
+  font-family: var(--heading-font);
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--primary-dark);
+}
+
+.contact-form-modal p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--secondary-gray);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: var(--body-font);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 3px rgba(45, 169, 176, 0.2);
+}
+
+.contact-form-modal .cta-button {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.social-follow-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary-light);
+  opacity: 0.9;
+}
+
+.social-media-bar {
+  display: flex;
+  gap: 25px;
+}
+
+.social-media-bar a {
+  color: var(--primary-light);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.social-media-bar a:hover {
+  opacity: 1;
+}
+
+.social-media-bar img {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Animações de Rolagem --- */
 .fade-in {
   opacity: 0;
   transform: translateY(20px);
@@ -459,7 +615,7 @@ footer {
   transform: translateY(0);
 }
 
-/* --- Responsive Hamburger Menu --- */
+/* --- Menu Hambúrguer Responsivo --- */
 .hamburger {
   display: none;
   cursor: pointer;
@@ -489,7 +645,7 @@ footer {
   transform: translateY(-8px) rotate(-45deg);
 }
 
-/* --- Media Queries --- */
+/* --- Media Queries (Responsividade) --- */
 @media (max-width: 768px) {
   .hero-content h1 {
     font-size: 2.5rem;
@@ -501,6 +657,11 @@ footer {
 
   .portfolio-card {
     flex-direction: column;
+    text-align: center;
+  }
+
+  footer .container {
+    justify-content: center;
     text-align: center;
   }
 

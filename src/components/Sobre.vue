@@ -20,100 +20,31 @@
           <div class="member-details">
             <div class="detail-item role-item">
               <div class="icon-wrapper">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <rect
-                    x="32"
-                    y="72"
-                    width="192"
-                    height="144"
-                    rx="8"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></rect>
-                  <path
-                    d="M176,72V56a24,24,0,0,0-24-24H104A24,24,0,0,0,80,56v16"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                </svg>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/6964/6964169.png"
+                  alt="Ícone de Cargo"
+                  class="icon-img"
+                />
               </div>
               <span>{{ member.role }}</span>
             </div>
             <div class="detail-item bio-item">
               <div class="icon-wrapper">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M24,96,128,40,232,96v64a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16Z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                  <path
-                    d="M208,96v88a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V96"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                </svg>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/6016/6016293.png"
+                  alt="Ícone de Graduação"
+                  class="icon-img"
+                />
               </div>
               <span>{{ member.bio }}</span>
             </div>
             <div v-if="member.postGrad" class="detail-item postgrad-item">
               <div class="icon-wrapper">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    d="M184,224l-32-32,32-32"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                  <path
-                    d="M80,128a48,48,0,1,0,48,48,48.05,48.05,0,0,0-48-48Z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                  <path
-                    d="M128,32a96,96,0,1,0,96,96,96.11,96.11,0,0,0-96-96Zm0,160a64,64,0,1,1,64-64A64.07,64.07,0,0,1,128,192Z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  ></path>
-                </svg>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/3000/3000745.png"
+                  alt="Ícone de Pós-Graduação"
+                  class="icon-img"
+                />
               </div>
               <span>{{ member.postGrad }}</span>
             </div>
