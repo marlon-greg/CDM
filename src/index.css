@@ -18,6 +18,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* Impede o scroll horizontal */
 }
 
 body {
@@ -25,6 +26,7 @@ body {
   background-color: var(--background-color);
   color: var(--primary-dark);
   line-height: 1.6;
+  overflow-x: hidden; /* Garante que o corpo também não tenha scroll */
 }
 
 /* --- Classes Utilitárias --- */
