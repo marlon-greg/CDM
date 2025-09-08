@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import Sobre from "@/components/Sobre.vue";
 import logoUrl from "./assets/logo.png";
 
 // Gerencia o estado do menu de navegação e do formulário de contato.
 const isMenuOpen = ref(false);
 const isContactFormOpen = ref(false);
+
+// Gerencia o popup de "call to action" (chamariz).
+const isCtaPopupVisible = ref(false);
+let ctaIntervalId: number | null = null;
+
+function showAndHidePopup() {
+  isCtaPopupVisible.value = true;
+  setTimeout(() => {
+    isCtaPopupVisible.value = false;
+  }, 10000); // Fica visível por 10 segundos
+}
+
+function handleCtaInteraction() {
+  // Ao interagir (clicar no link ou fechar), o popup é escondido, mas o ciclo de reaparição continua.
+  isCtaPopupVisible.value = false;
+}
 
 // Funções para controlar a visibilidade do menu e do formulário.
 function toggleMenu() {
@@ -62,6 +78,19 @@ const vFadeIn = {
     observer.observe(el);
   },
 };
+
+onMounted(() => {
+  // Espera 15 segundos para mostrar o primeiro popup
+  setTimeout(() => {
+    showAndHidePopup();
+    // Depois, repete a cada 25 segundos (15s escondido + 10s visível)
+    ctaIntervalId = setInterval(showAndHidePopup, 25000);
+  }, 15000);
+});
+
+onUnmounted(() => {
+  if (ctaIntervalId) clearInterval(ctaIntervalId);
+});
 </script>
 
 <template>
@@ -482,4 +511,21 @@ const vFadeIn = {
       </form>
     </div>
   </div>
+
+  <!-- Chamariz (CTA Popup) -->
+  <transition name="cta-popup-fade">
+    <div v-if="isCtaPopupVisible" class="cta-popup">
+      <a href="#contact" @click="handleCtaInteraction" class="cta-popup-link">
+        <span class="cta-popup-icon">💬</span>
+        <span class="cta-popup-text">Entre em contato</span>
+      </a>
+      <button
+        @click="handleCtaInteraction"
+        class="cta-popup-close"
+        aria-label="Fechar"
+      >
+        &times;
+      </button>
+    </div>
+  </transition>
 </template>
