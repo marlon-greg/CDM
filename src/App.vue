@@ -1,18 +1,39 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import Sobre from "@/components/Sobre.vue";
+import logoUrl from "./assets/logo.png";
 
-// Estado para controlar o menu hamburguer
+// Gerencia o estado de abertura do menu de navegação em dispositivos móveis.
 const isMenuOpen = ref(false);
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
-
 function closeMenu() {
   isMenuOpen.value = false;
 }
 
-// Diretiva customizada para o efeito de fade-in
+// Define os dados para a seção de portfólio, que serão renderizados dinamicamente.
+const portfolio = ref([
+  {
+    client: "Empresa de Logística Exemplo",
+    logo: "https://via.placeholder.com/150/2DA9B0/FFFFFF?text=Logo",
+    description:
+      "Desenvolvemos um sistema de gerenciamento de frotas e otimização de rotas em tempo real, resultando em uma redução de 15% nos custos operacionais e um aumento de 20% na eficiência das entregas.",
+    link: "https://example.com",
+    linkText: "Ver Estudo de Caso",
+  },
+  {
+    client: "Clínica Médica Exemplo",
+    logo: "https://via.placeholder.com/150/3E4A59/FFFFFF?text=Logo",
+    description:
+      "Implementação de um sistema de agendamento online e prontuário eletrônico (PWA), melhorando a experiência do paciente e centralizando as informações de forma segura e acessível para os profissionais de saúde.",
+    link: null,
+    linkText: "Projeto de Sistema Interno",
+  },
+]);
+
+// Cria uma diretiva customizada (v-fade-in) para aplicar animações de fade-in aos elementos quando eles entram na tela.
 const vFadeIn = {
   mounted: (el: HTMLElement) => {
     el.classList.add("fade-in");
@@ -58,7 +79,9 @@ const vFadeIn = {
         id="navigation"
       >
         <li><a href="#about" @click="closeMenu">Sobre</a></li>
+        <li><a href="#fundadores" @click="closeMenu">Fundadores</a></li>
         <li><a href="#services" @click="closeMenu">Serviços</a></li>
+        <li><a href="#portfolio" @click="closeMenu">Projetos</a></li>
         <li><a href="#contact" @click="closeMenu">Contato</a></li>
       </ul>
     </nav>
@@ -79,6 +102,9 @@ const vFadeIn = {
     <section id="about" v-fade-in>
       <div class="container">
         <h2>Sobre a CDM</h2>
+        <div class="about-logo-container">
+          <img :src="logoUrl" alt="Logo da CDM" class="about-logo" />
+        </div>
         <p>
           Fundada por <strong>Celso, Daniel e Marlon</strong>, a CDM Soluções em
           TI se dedica a capacitar pequenas e médias empresas através da
@@ -89,6 +115,7 @@ const vFadeIn = {
           cenário digital.
         </p>
       </div>
+      <Sobre />
     </section>
 
     <section id="services" v-fade-in>
@@ -274,6 +301,40 @@ const vFadeIn = {
       </div>
     </section>
 
+    <section id="portfolio" v-fade-in>
+      <div class="container">
+        <h2>Nosso Portfólio</h2>
+        <div class="portfolio-list">
+          <div
+            v-for="project in portfolio"
+            :key="project.client"
+            class="portfolio-card"
+          >
+            <div class="portfolio-logo-wrapper">
+              <img
+                :src="project.logo"
+                :alt="'Logo ' + project.client"
+                class="portfolio-logo"
+              />
+            </div>
+            <div class="portfolio-info">
+              <h3>{{ project.client }}</h3>
+              <p>{{ project.description }}</p>
+              <a
+                v-if="project.link"
+                :href="project.link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="portfolio-link"
+                >{{ project.linkText }} &rarr;</a
+              >
+              <span v-else class="portfolio-tag">{{ project.linkText }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="contact" v-fade-in>
       <div class="container">
         <h2>Pronto para Elevar o Seu Negócio?</h2>
@@ -281,8 +342,8 @@ const vFadeIn = {
           Vamos conversar sobre como nossas soluções de TI podem ajudá-lo a
           alcançar seus objetivos. Entre em contato hoje para uma consulta.
         </p>
-        <a href="https://wa.me/5511987654321" class="cta-button"
-          target="_blank">Entre em Contato</a
+        <a href="https://wa.me/5511987654321" class="cta-button" target="_blank"
+          >Entre em Contato</a
         >
       </div>
     </section>
@@ -294,9 +355,3 @@ const vFadeIn = {
     </div>
   </footer>
 </template>
-
-<style scoped>
-/* O CSS de index.css pode ser movido para cá se for específico deste componente,
-   ou continuar sendo importado globalmente em main.ts.
-   Para este projeto, manter globalmente é uma boa abordagem. */
-</style>
