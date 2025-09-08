@@ -6,6 +6,7 @@ import logoUrl from "./assets/logo.png";
 // Gerencia o estado do menu de navegação e do formulário de contato.
 const isMenuOpen = ref(false);
 const isContactFormOpen = ref(false);
+const isScrolled = ref(false);
 
 // Gerencia o popup de "call to action" (chamariz).
 const isCtaPopupVisible = ref(false);
@@ -36,6 +37,10 @@ function openContactForm() {
 }
 function closeContactForm() {
   isContactFormOpen.value = false;
+}
+
+function handleScroll() {
+  isScrolled.value = window.scrollY > 50; // A sombra aparece após rolar 50px
 }
 
 // Dados para a seção de portfólio.
@@ -81,6 +86,7 @@ const vFadeIn = {
 
 onMounted(() => {
   // Espera 15 segundos para mostrar o primeiro popup
+  window.addEventListener("scroll", handleScroll);
   setTimeout(() => {
     showAndHidePopup();
     // Depois, repete a cada 25 segundos (15s escondido + 10s visível)
@@ -89,6 +95,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
   if (ctaIntervalId) clearInterval(ctaIntervalId);
 });
 </script>
@@ -125,7 +132,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-  <header id="header">
+  <header id="header" :class="{ scrolled: isScrolled }">
     <nav class="container">
       <a href="#top-bar" class="logo-link" @click="closeMenu">
         <img src="./assets/logo.png" alt="CDM IT Logo" class="logo" />
@@ -529,3 +536,15 @@ onUnmounted(() => {
     </div>
   </transition>
 </template>
+
+<style scoped>
+/* Adiciona uma transição suave para a sombra do cabeçalho */
+#header {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Estilo da sombra quando a página é rolada */
+#header.scrolled {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+</style>
