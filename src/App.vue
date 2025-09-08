@@ -1,95 +1,304 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+  watchEffect,
+  provide,
+} from "vue";
 import Sobre from "@/components/Sobre.vue";
 import logoUrl from "./assets/logo.png";
 
-// Gerencia o estado do menu de navegação e do formulário de contato.
+// --- GERENCIAMENTO DE TEMA ---
+const theme = ref(localStorage.getItem("theme") || "system");
+const isSystemDark = ref(
+  window.matchMedia("(prefers-color-scheme: dark)").matches
+);
+
+const effectiveTheme = computed(() => {
+  if (theme.value === "system") {
+    return isSystemDark.value ? "dark" : "light";
+  }
+  return theme.value;
+});
+
+watchEffect(() => {
+  const root = document.documentElement;
+  if (effectiveTheme.value === "dark") {
+    root.classList.add("dark");
+  } else {
+    root.classList.remove("dark");
+  }
+  if (theme.value !== "system") {
+    localStorage.setItem("theme", theme.value);
+  }
+});
+
+onMounted(() => {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const updateSystemTheme = (e: MediaQueryListEvent) =>
+    (isSystemDark.value = e.matches);
+  mediaQuery.addEventListener("change", updateSystemTheme);
+  onUnmounted(() =>
+    mediaQuery.removeEventListener("change", updateSystemTheme)
+  );
+});
+
+function toggleTheme() {
+  theme.value = effectiveTheme.value === "light" ? "dark" : "light";
+}
+
+// --- GERENCIAMENTO DE IDIOMA ---
+const language = ref<"pt" | "en">("pt"); // CORREÇÃO: Tipagem explícita para resolver erro de índice.
+const translations = ref({
+  pt: {
+    // Top Bar & Header
+    followUs: "Sigam-nos nas redes sociais",
+    logoAlt: "Logo da CDM IT",
+    navAbout: "Sobre",
+    navFounders: "Fundadores",
+    navServices: "Serviços",
+    navProjects: "Projetos",
+    navContact: "Contato",
+    // Hero Section
+    heroTitle: "Construindo o Futuro do Seu Negócio",
+    heroSubtitle:
+      "Software Personalizado, Infraestrutura Robusta e Consultoria Especializada em TI",
+    heroButton: "Explore Nossos Serviços",
+    // About Section
+    aboutTitle: "Sobre a CDM",
+    aboutText:
+      "Fundada por <strong>Celso, Daniel e Marlon</strong>, a CDM Soluções em TI se dedica a capacitar pequenas e médias empresas através da tecnologia. Acreditamos na construção de parcerias sólidas, compreendendo seus desafios únicos e entregando soluções personalizadas que impulsionam o crescimento, a eficiência e a inovação. Nossa experiência combinada é o seu trunfo para navegar no cenário digital.",
+    // Founders Section (for Sobre.vue)
+    foundersTitle: "Nossos Fundadores",
+    owners: [
+      {
+        name: "Celso Rodrigo Giusti",
+        role: "Especialista em Infraestrutura e Redes",
+        photoUrl: "celsoPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/celso-giusti-886b8596",
+        bio: "Graduado em Análise e desenvolvimento de sistemas pela FPM e Gestão Empresarial pela FATEC.",
+      },
+      {
+        name: "Daniel Manoel Filho",
+        role: "Especialista em Desenvolvimento de Software",
+        photoUrl: "danielPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/dannmf",
+        bio: "Graduado em Análise e Desenvolvimento de Sistemas pela FATEC.",
+      },
+      {
+        name: "Marlon Palata Fanger Rodrigues",
+        role: "Especialista em Segurança da Informação",
+        photoUrl: "marlonPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/marlonfangerrodrigues",
+        bio: "Graduado em Redes de Computadores e Análise e Desenvolvimento de Sistemas pela FATEC Indaiatuba.",
+        postGrad:
+          "Pós-graduado em Segurança da Informação pela faculdade Líbano.",
+      },
+    ],
+    // Services Section
+    servicesTitle: "Nossos Principais Serviços",
+    serviceDevTitle: "Desenvolvimento Personalizado",
+    serviceDevText:
+      "Construímos soluções digitais escaláveis e intuitivas, incluindo sites dinâmicos, progressive web apps (PWAs), sistemas de ponto de venda, sistemas de automação residencial (domótica) e aplicações de negócios personalizadas para suas necessidades operacionais específicas.",
+    serviceInfraTitle: "Infraestrutura de TI",
+    serviceInfraText:
+      "Projetamos e gerenciamos ambientes de TI robustos. Nossos serviços incluem instalação de redes, integração de dispositivos de domótica, sistemas de controle de acesso seguro (biometria, facial), configuração de servidores e monitoramento contínuo para garantir o desempenho ideal.",
+    serviceConsultTitle: "Consultoria Especializada",
+    serviceConsultText:
+      "Aproveite nossa experiência para tomar decisões tecnológicas informadas. Oferecemos orientação estratégica em desenvolvimento, infraestrutura e redes para alinhar sua estratégia de TI com seus objetivos de negócios para o sucesso a longo prazo.",
+    // Portfolio Section
+    portfolioTitle: "Nosso Portfólio",
+    portfolio: [
+      {
+        client: "Empresa de Logística Exemplo",
+        logo: "https://via.placeholder.com/150/2DA9B0/FFFFFF?text=Logo",
+        description:
+          "Desenvolvemos um sistema de gerenciamento de frotas e otimização de rotas em tempo real, resultando em uma redução de 15% nos custos operacionais e um aumento de 20% na eficiência das entregas.",
+        link: "https://example.com",
+        linkText: "Ver Estudo de Caso",
+      },
+      {
+        client: "Clínica Médica Exemplo",
+        logo: "https://via.placeholder.com/150/3E4A59/FFFFFF?text=Logo",
+        description:
+          "Implementação de um sistema de agendamento online e prontuário eletrônico (PWA), melhorando a experiência do paciente e centralizando as informações de forma segura e acessível para os profissionais de saúde.",
+        link: null,
+        linkText: "Projeto de Sistema Interno",
+      },
+    ],
+    // Contact Section
+    contactTitle: "Pronto para Elevar o Seu Negócio?",
+    contactText:
+      "Vamos conversar sobre como nossas soluções de TI podem ajudá-lo a alcançar seus objetivos. Entre em contato hoje para uma consulta.",
+    contactButton: "Entre em Contato",
+    // Footer
+    footerRights: "© 2025 CDM Soluções em TI. Todos os Direitos Reservados.",
+    // Contact Modal
+    modalTitle: "Fale Conosco",
+    modalText: "Preencha o formulário abaixo e retornaremos em breve.",
+    modalName: "Nome Completo",
+    modalEmail: "Email",
+    modalPhone: "Telefone",
+    modalMessage: "Descrição simples (Opcional)",
+    modalSend: "Enviar Mensagem",
+    // CTA Popup
+    ctaPopupText: "Entre em contato",
+  },
+  en: {
+    // Top Bar & Header
+    followUs: "Follow us on social media",
+    logoAlt: "CDM IT Logo",
+    navAbout: "About",
+    navFounders: "Founders",
+    navServices: "Services",
+    navProjects: "Projects",
+    navContact: "Contact",
+    // Hero Section
+    heroTitle: "Building the Future of Your Business",
+    heroSubtitle:
+      "Custom Software, Robust Infrastructure, and Specialized IT Consulting",
+    heroButton: "Explore Our Services",
+    // About Section
+    aboutTitle: "About CDM",
+    aboutText:
+      "Founded by <strong>Celso, Daniel, and Marlon</strong>, CDM IT Solutions is dedicated to empowering small and medium-sized businesses through technology. We believe in building strong partnerships, understanding your unique challenges, and delivering custom solutions that drive growth, efficiency, and innovation. Our combined experience is your asset in navigating the digital landscape.",
+    // Founders Section (for Sobre.vue)
+    foundersTitle: "Our Founders",
+    owners: [
+      {
+        name: "Celso Rodrigo Giusti",
+        role: "Infrastructure and Network Specialist",
+        photoUrl: "celsoPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/celso-giusti-886b8596",
+        bio: "Graduated in Systems Analysis and Development from FPM and Business Management from FATEC.",
+      },
+      {
+        name: "Daniel Manoel Filho",
+        role: "Software Development Specialist",
+        photoUrl: "danielPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/dannmf",
+        bio: "Graduated in Systems Analysis and Development from FATEC.",
+      },
+      {
+        name: "Marlon Palata Fanger Rodrigues",
+        role: "Information Security Specialist",
+        photoUrl: "marlonPhoto",
+        linkedinUrl: "https://www.linkedin.com/in/marlonfangerrodrigues",
+        bio: "Graduated in Computer Networks and Systems Analysis and Development from FATEC Indaiatuba.",
+        postGrad:
+          "Post-graduate degree in Information Security from Líbano College.",
+      },
+    ],
+    // Services Section
+    servicesTitle: "Our Main Services",
+    serviceDevTitle: "Custom Development",
+    serviceDevText:
+      "We build scalable and intuitive digital solutions, including dynamic websites, progressive web apps (PWAs), point-of-sale systems, home automation (domotics) systems, and custom business applications for your specific operational needs.",
+    serviceInfraTitle: "IT Infrastructure",
+    serviceInfraText:
+      "We design and manage robust IT environments. Our services include network installation, home automation device integration, secure access control systems (biometric, facial), server configuration, and continuous monitoring to ensure optimal performance.",
+    serviceConsultTitle: "Specialized Consulting",
+    serviceConsultText:
+      "Leverage our experience to make informed technology decisions. We offer strategic guidance in development, infrastructure, and networking to align your IT strategy with your business goals for long-term success.",
+    // Portfolio Section
+    portfolioTitle: "Our Portfolio",
+    portfolio: [
+      {
+        client: "Sample Logistics Company",
+        logo: "https://via.placeholder.com/150/2DA9B0/FFFFFF?text=Logo",
+        description:
+          "We developed a fleet management and real-time route optimization system, resulting in a 15% reduction in operational costs and a 20% increase in delivery efficiency.",
+        link: "https://example.com",
+        linkText: "View Case Study",
+      },
+      {
+        client: "Sample Medical Clinic",
+        logo: "https://via.placeholder.com/150/3E4A59/FFFFFF?text=Logo",
+        description:
+          "Implementation of an online scheduling system and electronic health record (PWA), improving the patient experience and centralizing information securely and accessibly for healthcare professionals.",
+        link: null,
+        linkText: "Internal System Project",
+      },
+    ],
+    // Contact Section
+    contactTitle: "Ready to Elevate Your Business?",
+    contactText:
+      "Let's talk about how our IT solutions can help you achieve your goals. Contact us today for a consultation.",
+    contactButton: "Get in Touch",
+    // Footer
+    footerRights: "© 2025 CDM IT Solutions. All Rights Reserved.",
+    // Contact Modal
+    modalTitle: "Contact Us",
+    modalText: "Fill out the form below and we will get back to you shortly.",
+    modalName: "Full Name",
+    modalEmail: "Email",
+    modalPhone: "Phone",
+    modalMessage: "Brief description (Optional)",
+    modalSend: "Send Message",
+    // CTA Popup
+    ctaPopupText: "Contact Us",
+  },
+});
+const t = computed(() => translations.value[language.value]);
+provide("t", t);
+
+function setLanguage(lang: "pt" | "en") {
+  language.value = lang;
+}
+
+// --- OUTROS ESTADOS E FUNÇÕES ---
 const isMenuOpen = ref(false);
 const isContactFormOpen = ref(false);
 const isScrolled = ref(false);
-
-// Gerencia o popup de "call to action" (chamariz).
 const isCtaPopupVisible = ref(false);
-let ctaIntervalId: number | null = null;
+let ctaIntervalId: any = null; // CORREÇÃO: Mudei para 'any' para aceitar o tipo 'Timeout' do Node.
 
 function showAndHidePopup() {
   isCtaPopupVisible.value = true;
-  setTimeout(() => {
-    isCtaPopupVisible.value = false;
-  }, 10000); // Fica visível por 10 segundos
+  setTimeout(() => (isCtaPopupVisible.value = false), 10000);
 }
-
 function handleCtaInteraction() {
-  // Ao interagir (clicar no link ou fechar), o popup é escondido, mas o ciclo de reaparição continua.
   isCtaPopupVisible.value = false;
 }
-
-// Funções para controlar a visibilidade do menu e do formulário.
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
 function closeMenu() {
   isMenuOpen.value = false;
 }
-
 function openContactForm() {
   isContactFormOpen.value = true;
 }
 function closeContactForm() {
   isContactFormOpen.value = false;
 }
-
 function handleScroll() {
-  isScrolled.value = window.scrollY > 50; // A sombra aparece após rolar 50px
+  isScrolled.value = window.scrollY > 50;
 }
 
-// Dados para a seção de portfólio.
-const portfolio = ref([
-  {
-    client: "Empresa de Logística Exemplo",
-    logo: "https://via.placeholder.com/150/2DA9B0/FFFFFF?text=Logo",
-    description:
-      "Desenvolvemos um sistema de gerenciamento de frotas e otimização de rotas em tempo real, resultando em uma redução de 15% nos custos operacionais e um aumento de 20% na eficiência das entregas.",
-    link: "https://example.com",
-    linkText: "Ver Estudo de Caso",
-  },
-  {
-    client: "Clínica Médica Exemplo",
-    logo: "https://via.placeholder.com/150/3E4A59/FFFFFF?text=Logo",
-    description:
-      "Implementação de um sistema de agendamento online e prontuário eletrônico (PWA), melhorando a experiência do paciente e centralizando as informações de forma segura e acessível para os profissionais de saúde.",
-    link: null,
-    linkText: "Projeto de Sistema Interno",
-  },
-]);
-
-// Diretiva customizada para animação de fade-in ao rolar a página.
 const vFadeIn = {
   mounted: (el: HTMLElement) => {
     el.classList.add("fade-in");
-
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             el.classList.add("visible");
             observer.unobserve(el);
           }
-        });
-      },
+        }),
       { threshold: 0.15 }
     );
-
     observer.observe(el);
   },
 };
 
 onMounted(() => {
-  // Espera 15 segundos para mostrar o primeiro popup
   window.addEventListener("scroll", handleScroll);
   setTimeout(() => {
     showAndHidePopup();
-    // Depois, repete a cada 25 segundos (15s escondido + 10s visível)
     ctaIntervalId = setInterval(showAndHidePopup, 25000);
   }, 15000);
 });
@@ -103,39 +312,92 @@ onUnmounted(() => {
 <template>
   <div id="top-bar">
     <div class="container">
-      <span class="social-follow-text">Sigam-nos nas redes sociais</span>
-      <div class="social-media-bar">
-        <a href="#" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+      <div class="top-bar-left">
+        <span class="social-follow-text">{{ t.followUs }}</span>
+        <div class="social-media-bar">
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="LinkedIn"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+              alt="LinkedIn"
+            />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+              alt="Instagram"
+            />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Facebook"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
+              alt="Facebook"
+            />
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
+              alt="TikTok"
+            />
+          </a>
+        </div>
+      </div>
+      <div class="controls-container">
+        <button
+          @click="setLanguage('pt')"
+          class="control-button"
+          title="Mudar para Português"
+        >
           <img
-            src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-            alt="LinkedIn"
+            src="https://flagicons.lipis.dev/flags/4x3/br.svg"
+            alt="Brasil Flag"
+            class="flag-icon"
           />
-        </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" title="Instagram">
+        </button>
+        <button
+          @click="setLanguage('en')"
+          class="control-button"
+          title="Switch to English"
+        >
           <img
-            src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
-            alt="Instagram"
+            src="https://flagicons.lipis.dev/flags/4x3/gb.svg"
+            alt="UK Flag"
+            class="flag-icon"
           />
-        </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" title="Facebook">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
-            alt="Facebook"
-          />
-        </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
-            alt="TikTok"
-          />
-        </a>
+        </button>
+        <button
+          @click="toggleTheme"
+          class="control-button theme-toggle"
+          title="Mudar tema"
+        >
+          <span v-if="effectiveTheme === 'light'">🌙</span>
+          <span v-if="effectiveTheme === 'dark'">☀️</span>
+        </button>
       </div>
     </div>
   </div>
   <header id="header" :class="{ scrolled: isScrolled }">
     <nav class="container">
       <a href="#top-bar" class="logo-link" @click="closeMenu">
-        <img src="./assets/logo.png" alt="CDM IT Logo" class="logo" />
+        <img
+          :src="logoUrl"
+          :alt="t.logoAlt"
+          class="logo logo-dark-mode-adapt"
+        />
       </a>
       <button
         class="hamburger"
@@ -154,11 +416,21 @@ onUnmounted(() => {
         :class="{ 'nav-active': isMenuOpen }"
         id="navigation"
       >
-        <li><a href="#about" @click="closeMenu">Sobre</a></li>
-        <li><a href="#fundadores" @click="closeMenu">Fundadores</a></li>
-        <li><a href="#services" @click="closeMenu">Serviços</a></li>
-        <li><a href="#portfolio" @click="closeMenu">Projetos</a></li>
-        <li><a href="#contact" @click="closeMenu">Contato</a></li>
+        <li>
+          <a href="#about" @click="closeMenu">{{ t.navAbout }}</a>
+        </li>
+        <li>
+          <a href="#fundadores" @click="closeMenu">{{ t.navFounders }}</a>
+        </li>
+        <li>
+          <a href="#services" @click="closeMenu">{{ t.navServices }}</a>
+        </li>
+        <li>
+          <a href="#portfolio" @click="closeMenu">{{ t.navProjects }}</a>
+        </li>
+        <li>
+          <a href="#contact" @click="closeMenu">{{ t.navContact }}</a>
+        </li>
       </ul>
     </nav>
   </header>
@@ -166,37 +438,30 @@ onUnmounted(() => {
   <main>
     <section id="hero">
       <div class="hero-content container">
-        <h1>Construindo o Futuro do Seu Negócio</h1>
-        <p class="subtitle">
-          Software Personalizado, Infraestrutura Robusta e Consultoria
-          Especializada em TI
-        </p>
-        <a href="#services" class="cta-button">Explore Nossos Serviços</a>
+        <h1>{{ t.heroTitle }}</h1>
+        <p class="subtitle">{{ t.heroSubtitle }}</p>
+        <a href="#services" class="cta-button">{{ t.heroButton }}</a>
       </div>
     </section>
 
     <section id="about" v-fade-in>
       <div class="container">
-        <h2>Sobre a CDM</h2>
+        <h2>{{ t.aboutTitle }}</h2>
         <div class="about-logo-container">
-          <img :src="logoUrl" alt="Logo da CDM" class="about-logo" />
+          <img
+            :src="logoUrl"
+            :alt="t.logoAlt"
+            class="about-logo logo-dark-mode-adapt"
+          />
         </div>
-        <p>
-          Fundada por <strong>Celso, Daniel e Marlon</strong>, a CDM Soluções em
-          TI se dedica a capacitar pequenas e médias empresas através da
-          tecnologia. Acreditamos na construção de parcerias sólidas,
-          compreendendo seus desafios únicos e entregando soluções
-          personalizadas que impulsionam o crescimento, a eficiência e a
-          inovação. Nossa experiência combinada é o seu trunfo para navegar no
-          cenário digital.
-        </p>
+        <p v-html="t.aboutText"></p>
       </div>
       <Sobre />
     </section>
 
     <section id="services" v-fade-in>
       <div class="container">
-        <h2>Nossos Principais Serviços</h2>
+        <h2>{{ t.servicesTitle }}</h2>
         <div class="services-grid">
           <div class="service-card">
             <div class="service-icon">
@@ -236,14 +501,8 @@ onUnmounted(() => {
                 ></line>
               </svg>
             </div>
-            <h3>Desenvolvimento Personalizado</h3>
-            <p>
-              Construímos soluções digitais escaláveis e intuitivas, incluindo
-              sites dinâmicos, progressive web apps (PWAs), sistemas de ponto de
-              venda, sistemas de automação residencial (domótica) e aplicações
-              de negócios personalizadas para suas necessidades operacionais
-              específicas.
-            </p>
+            <h3>{{ t.serviceDevTitle }}</h3>
+            <p>{{ t.serviceDevText }}</p>
           </div>
           <div class="service-card">
             <div class="service-icon">
@@ -323,14 +582,8 @@ onUnmounted(() => {
                 ></line>
               </svg>
             </div>
-            <h3>Infraestrutura de TI</h3>
-            <p>
-              Projetamos e gerenciamos ambientes de TI robustos. Nossos serviços
-              incluem instalação de redes, integração de dispositivos de
-              domótica, sistemas de controle de acesso seguro (biometria,
-              facial), configuração de servidores e monitoramento contínuo para
-              garantir o desempenho ideal.
-            </p>
+            <h3>{{ t.serviceInfraTitle }}</h3>
+            <p>{{ t.serviceInfraText }}</p>
           </div>
           <div class="service-card">
             <div class="service-icon">
@@ -367,13 +620,8 @@ onUnmounted(() => {
                 ></path>
               </svg>
             </div>
-            <h3>Consultoria Especializada</h3>
-            <p>
-              Aproveite nossa experiência para tomar decisões tecnológicas
-              informadas. Oferecemos orientação estratégica em desenvolvimento,
-              infraestrutura e redes para alinhar sua estratégia de TI com seus
-              objetivos de negócios para o sucesso a longo prazo.
-            </p>
+            <h3>{{ t.serviceConsultTitle }}</h3>
+            <p>{{ t.serviceConsultText }}</p>
           </div>
         </div>
       </div>
@@ -381,10 +629,10 @@ onUnmounted(() => {
 
     <section id="portfolio" v-fade-in>
       <div class="container">
-        <h2>Nosso Portfólio</h2>
+        <h2>{{ t.portfolioTitle }}</h2>
         <div class="portfolio-list">
           <div
-            v-for="project in portfolio"
+            v-for="project in t.portfolio"
             :key="project.client"
             class="portfolio-card"
           >
@@ -402,7 +650,6 @@ onUnmounted(() => {
                 v-if="project.link"
                 :href="project.link"
                 target="_blank"
-                rel="noopener noreferrer"
                 class="portfolio-link"
                 >{{ project.linkText }} &rarr;</a
               >
@@ -415,13 +662,10 @@ onUnmounted(() => {
 
     <section id="contact" v-fade-in>
       <div class="container">
-        <h2>Pronto para Elevar o Seu Negócio?</h2>
-        <p>
-          Vamos conversar sobre como nossas soluções de TI podem ajudá-lo a
-          alcançar seus objetivos. Entre em contato hoje para uma consulta.
-        </p>
+        <h2>{{ t.contactTitle }}</h2>
+        <p>{{ t.contactText }}</p>
         <button @click="openContactForm" class="cta-button">
-          Entre em Contato
+          {{ t.contactButton }}
         </button>
       </div>
     </section>
@@ -429,55 +673,10 @@ onUnmounted(() => {
 
   <footer>
     <div class="container">
-      <p>&copy; 2025 CDM Soluções em TI. Todos os Direitos Reservados.</p>
-      <div class="footer-socials">
-        <span class="social-follow-text">Sigam-nos nas redes sociais</span>
-        <div class="social-media-bar">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="LinkedIn"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-              alt="LinkedIn"
-            />
-          </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Instagram"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
-              alt="Instagram"
-            />
-          </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Facebook"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
-              alt="Facebook"
-            />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
-              alt="TikTok"
-            />
-          </a>
-        </div>
-      </div>
+      <p>{{ t.footerRights }}</p>
     </div>
   </footer>
 
-  <!-- Contact Form Modal -->
   <div
     v-if="isContactFormOpen"
     class="contact-form-overlay"
@@ -491,40 +690,39 @@ onUnmounted(() => {
       >
         &times;
       </button>
-      <h3>Fale Conosco</h3>
-      <p>Preencha o formulário abaixo e retornaremos em breve.</p>
+      <h3>{{ t.modalTitle }}</h3>
+      <p>{{ t.modalText }}</p>
       <form
         action="mailto:contato@cdmti.com.br"
         method="post"
         enctype="text/plain"
       >
         <div class="form-group">
-          <label for="fullName">Nome Completo</label>
+          <label for="fullName">{{ t.modalName }}</label>
           <input type="text" id="fullName" name="Nome" required />
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ t.modalEmail }}</label>
           <input type="email" id="email" name="Email" required />
         </div>
         <div class="form-group">
-          <label for="phone">Telefone</label>
+          <label for="phone">{{ t.modalPhone }}</label>
           <input type="tel" id="phone" name="Telefone" required />
         </div>
         <div class="form-group">
-          <label for="message">Descrição simples (Opcional)</label>
+          <label for="message">{{ t.modalMessage }}</label>
           <textarea id="message" name="Mensagem" rows="4"></textarea>
         </div>
-        <button type="submit" class="cta-button">Enviar Mensagem</button>
+        <button type="submit" class="cta-button">{{ t.modalSend }}</button>
       </form>
     </div>
   </div>
 
-  <!-- Chamariz (CTA Popup) -->
   <transition name="cta-popup-fade">
     <div v-if="isCtaPopupVisible" class="cta-popup">
       <a href="#contact" @click="handleCtaInteraction" class="cta-popup-link">
         <span class="cta-popup-icon">💬</span>
-        <span class="cta-popup-text">Entre em contato</span>
+        <span class="cta-popup-text">{{ t.ctaPopupText }}</span>
       </a>
       <button
         @click="handleCtaInteraction"
@@ -538,12 +736,9 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* Adiciona uma transição suave para a sombra do cabeçalho */
 #header {
   transition: box-shadow 0.3s ease-in-out;
 }
-
-/* Estilo da sombra quando a página é rolada */
 #header.scrolled {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }

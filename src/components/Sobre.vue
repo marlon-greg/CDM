@@ -1,11 +1,10 @@
-<!-- Estrutura visual do componente Sobre -->
 <template>
-  <div class="team-section">
+  <div class="team-section" v-if="t">
     <div class="container">
-      <h2 class="section-title" id="fundadores">Nossos Fundadores</h2>
+      <h2 class="section-title" id="fundadores">{{ t.foundersTitle }}</h2>
       <div class="team-grid">
         <div
-          v-for="member in owners"
+          v-for="member in ownersWithPhotos"
           :key="member.name"
           class="team-member-card"
         >
@@ -19,33 +18,27 @@
           <h3 class="member-name">{{ member.name }}</h3>
           <div class="member-details">
             <div class="detail-item role-item">
-              <div class="icon-wrapper">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/6964/6964169.png"
-                  alt="Ícone de Cargo"
-                  class="icon-img"
-                />
-              </div>
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/6964/6964169.png"
+                alt="Ícone de Maleta"
+                class="icon-img"
+              />
               <span>{{ member.role }}</span>
             </div>
             <div class="detail-item bio-item">
-              <div class="icon-wrapper">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/6016/6016293.png"
-                  alt="Ícone de Graduação"
-                  class="icon-img"
-                />
-              </div>
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/686/686051.png"
+                alt="Ícone de Chapéu de Formatura"
+                class="icon-img"
+              />
               <span>{{ member.bio }}</span>
             </div>
             <div v-if="member.postGrad" class="detail-item postgrad-item">
-              <div class="icon-wrapper">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/3000/3000745.png"
-                  alt="Ícone de Pós-Graduação"
-                  class="icon-img"
-                />
-              </div>
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/3000/3000745.png"
+                alt="Ícone de Certificado"
+                class="icon-img"
+              />
               <span>{{ member.postGrad }}</span>
             </div>
           </div>
@@ -57,17 +50,10 @@
               class="social-link"
               title="Ver perfil no LinkedIn"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 256 256"
-              >
-                <path
-                  d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.75A36,36,0,0,1,184,140ZM84,80a12,12,0,1,1-12-12A12,12,0,0,1,84,80Z"
-                ></path>
-              </svg>
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/1384/1384088.png"
+                alt="Ícone do LinkedIn"
+              />
             </a>
           </div>
         </div>
@@ -76,11 +62,10 @@
   </div>
 </template>
 
-<!-- Lógica e dados do componente -->
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject, computed } from "vue";
 
-// Importação das imagens para garantir que o Vite as processe corretamente durante o build.
+// Importação das imagens para garantir que o Vite as processe corretamente.
 import celsoPhoto from "@/assets/celso.png";
 import danielPhoto from "@/assets/daniel.png";
 import marlonPhoto from "@/assets/marlon.png";
@@ -88,34 +73,28 @@ import marlonPhoto from "@/assets/marlon.png";
 export default defineComponent({
   name: "Sobre",
   setup() {
-    const owners = [
-      {
-        name: "Celso Rodrigo Giusti",
-        role: "Especialista em Infraestrutura e Redes",
-        photoUrl: celsoPhoto,
-        linkedinUrl: "https://www.linkedin.com/in/celso-giusti-886b8596",
-        bio: "Graduado em Análise e desenvolvimento de sistemas pela FPM e Gestão Empresarial pela FATEC.",
-      },
-      {
-        name: "Daniel Manoel Filho",
-        role: "Especialista em Desenvolvimento de Software",
-        photoUrl: danielPhoto,
-        linkedinUrl: "https://www.linkedin.com/in/dannmf",
-        bio: "Graduado em Análise e Desenvolvimento de Sistemas pela FATEC.",
-      },
-      {
-        name: "Marlon Palata Fanger Rodrigues",
-        role: "Especialista em Segurança da Informação",
-        photoUrl: marlonPhoto,
-        linkedinUrl: "https://www.linkedin.com/in/marlonfangerrodrigues",
-        bio: "Graduado em Redes de Computadores e Análise e Desenvolvimento de Sistemas pela FATEC Indaiatuba.",
-        postGrad:
-          "Pós-graduado em Segurança da Informação pela faculdade Líbano.",
-      },
-    ];
+    // Mapeia os nomes das fotos para os imports reais
+    const photoMap: { [key: string]: string } = {
+      celsoPhoto,
+      danielPhoto,
+      marlonPhoto,
+    };
+
+    // Injeta os textos traduzidos do componente pai (App.vue)
+    const t: any = inject("t");
+
+    // Cria uma propriedade computada que combina os dados de texto com as imagens importadas
+    const ownersWithPhotos = computed(() => {
+      if (!t || !t.value || !t.value.owners) return [];
+      return t.value.owners.map((owner: any) => ({
+        ...owner,
+        photoUrl: photoMap[owner.photoUrl] || "", // Substitui o nome pela imagem real
+      }));
+    });
 
     return {
-      owners,
+      t,
+      ownersWithPhotos,
     };
   },
 });
