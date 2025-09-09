@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// ========================================================================
+// IMPORTAÇÕES DE RECURSOS DO VUE E COMPONENTES
+// ========================================================================
 import {
   ref,
   onMounted,
@@ -10,19 +13,20 @@ import {
 import Sobre from "@/components/Sobre.vue";
 import logoUrl from "./assets/logo.png";
 
-// --- GERENCIAMENTO DE TEMA ---
-const theme = ref(localStorage.getItem("theme") || "system");
+// ========================================================================
+// SEÇÃO DE GERENCIAMENTO DE TEMA (100% AUTOMÁTICO)
+// ========================================================================
+// Reage às preferências de tema claro/escuro do sistema operacional.
 const isSystemDark = ref(
   window.matchMedia("(prefers-color-scheme: dark)").matches
 );
 
+// Define o tema efetivo ('dark' or 'light') com base na preferência do sistema.
 const effectiveTheme = computed(() => {
-  if (theme.value === "system") {
-    return isSystemDark.value ? "dark" : "light";
-  }
-  return theme.value;
+  return isSystemDark.value ? "dark" : "light";
 });
 
+// Observa mudanças no tema e aplica/remove a classe 'dark' do elemento <html>.
 watchEffect(() => {
   const root = document.documentElement;
   if (effectiveTheme.value === "dark") {
@@ -30,27 +34,13 @@ watchEffect(() => {
   } else {
     root.classList.remove("dark");
   }
-  if (theme.value !== "system") {
-    localStorage.setItem("theme", theme.value);
-  }
 });
 
-onMounted(() => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const updateSystemTheme = (e: MediaQueryListEvent) =>
-    (isSystemDark.value = e.matches);
-  mediaQuery.addEventListener("change", updateSystemTheme);
-  onUnmounted(() =>
-    mediaQuery.removeEventListener("change", updateSystemTheme)
-  );
-});
-
-function toggleTheme() {
-  theme.value = effectiveTheme.value === "light" ? "dark" : "light";
-}
-
-// --- GERENCIAMENTO DE IDIOMA ---
-const language = ref<"pt" | "en">("pt"); // CORREÇÃO: Tipagem explícita para resolver erro de índice.
+// ========================================================================
+// SEÇÃO DE GERENCIAMENTO DE IDIOMA (i18n)
+// ========================================================================
+// Define o idioma padrão e armazena os textos.
+const language = ref<"pt" | "en">("pt");
 const translations = ref({
   pt: {
     // Top Bar & Header
@@ -241,20 +231,28 @@ const translations = ref({
     ctaPopupText: "Contact Us",
   },
 });
+
+// Computed property que fornece os textos do idioma selecionado.
 const t = computed(() => translations.value[language.value]);
+// Fornece os textos para componentes filhos (como o Sobre.vue).
 provide("t", t);
 
+// Função para alterar o idioma.
 function setLanguage(lang: "pt" | "en") {
   language.value = lang;
 }
 
-// --- OUTROS ESTADOS E FUNÇÕES ---
+// ========================================================================
+// SEÇÃO DE ESTADOS E FUNÇÕES DA INTERFACE (UI)
+// ========================================================================
+// Estados reativos para controlar elementos da UI.
 const isMenuOpen = ref(false);
 const isContactFormOpen = ref(false);
 const isScrolled = ref(false);
 const isCtaPopupVisible = ref(false);
-let ctaIntervalId: any = null; // CORREÇÃO: Mudei para 'any' para aceitar o tipo 'Timeout' do Node.
+let ctaIntervalId: number | undefined = undefined;
 
+// Funções para manipular os estados da UI.
 function showAndHidePopup() {
   isCtaPopupVisible.value = true;
   setTimeout(() => (isCtaPopupVisible.value = false), 10000);
@@ -278,6 +276,9 @@ function handleScroll() {
   isScrolled.value = window.scrollY > 50;
 }
 
+// ========================================================================
+// DIRETIVA CUSTOMIZADA v-fade-in PARA ANIMAÇÃO DE SCROLL
+// ========================================================================
 const vFadeIn = {
   mounted: (el: HTMLElement) => {
     el.classList.add("fade-in");
@@ -295,17 +296,31 @@ const vFadeIn = {
   },
 };
 
+// ========================================================================
+// CICLOS DE VIDA (Lifecycle Hooks)
+// ========================================================================
 onMounted(() => {
+  // Observa mudanças no tema do sistema.
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const updateSystemTheme = (e: MediaQueryListEvent) =>
+    (isSystemDark.value = e.matches);
+  mediaQuery.addEventListener("change", updateSystemTheme);
+
+  // Adiciona o listener de scroll.
   window.addEventListener("scroll", handleScroll);
+
+  // Inicia o temporizador para o popup de CTA.
   setTimeout(() => {
     showAndHidePopup();
-    ctaIntervalId = setInterval(showAndHidePopup, 25000);
+    ctaIntervalId = setInterval(showAndHidePopup, 25000) as unknown as number;
   }, 15000);
-});
 
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-  if (ctaIntervalId) clearInterval(ctaIntervalId);
+  onUnmounted(() => {
+    // Limpa todos os listeners e intervalos para evitar memory leaks.
+    mediaQuery.removeEventListener("change", updateSystemTheme);
+    window.removeEventListener("scroll", handleScroll);
+    if (ctaIntervalId) clearInterval(ctaIntervalId);
+  });
 });
 </script>
 
@@ -315,122 +330,48 @@ onUnmounted(() => {
       <div class="top-bar-left">
         <span class="social-follow-text">{{ t.followUs }}</span>
         <div class="social-media-bar">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="LinkedIn"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-              alt="LinkedIn"
-            />
+          <a href="#" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" />
           </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Instagram"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
-              alt="Instagram"
-            />
+          <a href="#" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
           </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Facebook"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/174/174848.png"
-              alt="Facebook"
-            />
+          <a href="#" target="_blank" rel="noopener noreferrer" title="Facebook">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174848.png" alt="Facebook" />
           </a>
           <a href="#" target="_blank" rel="noopener noreferrer" title="TikTok">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
-              alt="TikTok"
-            />
+            <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
           </a>
         </div>
       </div>
       <div class="controls-container">
-        <button
-          @click="setLanguage('pt')"
-          class="control-button"
-          title="Mudar para Português"
-        >
-          <img
-            src="https://flagicons.lipis.dev/flags/4x3/br.svg"
-            alt="Brasil Flag"
-            class="flag-icon"
-          />
+        <button @click="setLanguage('pt')" class="control-button" title="Mudar para Português">
+          <img src="https://flagicons.lipis.dev/flags/4x3/br.svg" alt="Brasil Flag" class="flag-icon" />
         </button>
-        <button
-          @click="setLanguage('en')"
-          class="control-button"
-          title="Switch to English"
-        >
-          <img
-            src="https://flagicons.lipis.dev/flags/4x3/gb.svg"
-            alt="UK Flag"
-            class="flag-icon"
-          />
-        </button>
-        <button
-          @click="toggleTheme"
-          class="control-button theme-toggle"
-          title="Mudar tema"
-        >
-          <span v-if="effectiveTheme === 'light'">🌙</span>
-          <span v-if="effectiveTheme === 'dark'">☀️</span>
+        <button @click="setLanguage('en')" class="control-button" title="Switch to English">
+          <img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" alt="UK Flag" class="flag-icon" />
         </button>
       </div>
     </div>
   </div>
+
   <header id="header" :class="{ scrolled: isScrolled }">
     <nav class="container">
       <a href="#top-bar" class="logo-link" @click="closeMenu">
-        <img
-          :src="logoUrl"
-          :alt="t.logoAlt"
-          class="logo logo-dark-mode-adapt"
-        />
+        <img :src="logoUrl" :alt="t.logoAlt" class="logo logo-dark-mode-adapt" />
       </a>
-      <button
-        class="hamburger"
-        @click="toggleMenu"
-        :class="{ 'is-active': isMenuOpen }"
-        aria-label="Menu"
-        aria-controls="navigation"
-        :aria-expanded="isMenuOpen"
-      >
+      <button class="hamburger" @click="toggleMenu" :class="{ 'is-active': isMenuOpen }" aria-label="Menu"
+        aria-controls="navigation" :aria-expanded="isMenuOpen">
         <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>
       </button>
-      <ul
-        class="nav-links"
-        :class="{ 'nav-active': isMenuOpen }"
-        id="navigation"
-      >
-        <li>
-          <a href="#about" @click="closeMenu">{{ t.navAbout }}</a>
-        </li>
-        <li>
-          <a href="#fundadores" @click="closeMenu">{{ t.navFounders }}</a>
-        </li>
-        <li>
-          <a href="#services" @click="closeMenu">{{ t.navServices }}</a>
-        </li>
-        <li>
-          <a href="#portfolio" @click="closeMenu">{{ t.navProjects }}</a>
-        </li>
-        <li>
-          <a href="#contact" @click="closeMenu">{{ t.navContact }}</a>
-        </li>
+      <ul class="nav-links" :class="{ 'nav-active': isMenuOpen }" id="navigation">
+        <li><a href="#about" @click="closeMenu">{{ t.navAbout }}</a></li>
+        <li><a href="#fundadores" @click="closeMenu">{{ t.navFounders }}</a></li>
+        <li><a href="#services" @click="closeMenu">{{ t.navServices }}</a></li>
+        <li><a href="#portfolio" @click="closeMenu">{{ t.navProjects }}</a></li>
+        <li><a href="#contact" @click="closeMenu">{{ t.navContact }}</a></li>
       </ul>
     </nav>
   </header>
@@ -448,11 +389,7 @@ onUnmounted(() => {
       <div class="container">
         <h2>{{ t.aboutTitle }}</h2>
         <div class="about-logo-container">
-          <img
-            :src="logoUrl"
-            :alt="t.logoAlt"
-            class="about-logo logo-dark-mode-adapt"
-          />
+          <img :src="logoUrl" :alt="t.logoAlt" class="about-logo logo-dark-mode-adapt" />
         </div>
         <p v-html="t.aboutText"></p>
       </div>
@@ -465,40 +402,13 @@ onUnmounted(() => {
         <div class="services-grid">
           <div class="service-card">
             <div class="service-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                fill="currentColor"
-                viewBox="0 0 256 256"
-              >
-                <path
-                  d="M88,144,32,88,88,32"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></path>
-                <path
-                  d="M168,224,224,168,168,112"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></path>
-                <line
-                  x1="152"
-                  y1="32"
-                  x2="104"
-                  y2="224"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M88,144,32,88,88,32" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M168,224,224,168,168,112" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></path>
+                <line x1="152" y1="32" x2="104" y2="224" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
               </svg>
             </div>
             <h3>{{ t.serviceDevTitle }}</h3>
@@ -506,80 +416,19 @@ onUnmounted(() => {
           </div>
           <div class="service-card">
             <div class="service-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                fill="currentColor"
-                viewBox="0 0 256 256"
-              >
-                <rect
-                  x="40"
-                  y="88"
-                  width="176"
-                  height="80"
-                  rx="8"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></rect>
-                <line
-                  x1="176"
-                  y1="168"
-                  x2="176"
-                  y2="208"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
-                <line
-                  x1="80"
-                  y1="168"
-                  x2="80"
-                  y2="208"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
-                <line
-                  x1="128"
-                  y1="88"
-                  x2="128"
-                  y2="48"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
-                <line
-                  x1="40"
-                  y1="128"
-                  x2="16"
-                  y2="128"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
-                <line
-                  x1="216"
-                  y1="128"
-                  x2="240"
-                  y2="128"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></line>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
+                <rect x="40" y="88" width="176" height="80" rx="8" fill="none" stroke="currentColor"
+                  stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></rect>
+                <line x1="176" y1="168" x2="176" y2="208" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
+                <line x1="80" y1="168" x2="80" y2="208" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
+                <line x1="128" y1="88" x2="128" y2="48" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
+                <line x1="40" y1="128" x2="16" y2="128" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
+                <line x1="216" y1="128" x2="240" y2="128" fill="none" stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="20"></line>
               </svg>
             </div>
             <h3>{{ t.serviceInfraTitle }}</h3>
@@ -587,37 +436,15 @@ onUnmounted(() => {
           </div>
           <div class="service-card">
             <div class="service-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                fill="currentColor"
-                viewBox="0 0 256 256"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
                 <path
                   d="M128,72a56,56,0,1,0,56,56A56.06,56.06,0,0,0,128,72Zm0,96a40,40,0,1,1,40-40A40.05,40.05,0,0,1,128,168Z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></path>
-                <path
-                  d="M68.61,196.61A95.49,95.49,0,0,1,32,128a95.49,95.49,0,0,1,36.61-68.61"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></path>
-                <path
-                  d="M187.39,59.39A95.49,95.49,0,0,1,224,128a95.49,95.49,0,0,1-36.61,68.61"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="20"
-                ></path>
+                  fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20">
+                </path>
+                <path d="M68.61,196.61A95.49,95.49,0,0,1,32,128a95.49,95.49,0,0,1,36.61-68.61" fill="none"
+                  stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M187.39,59.39A95.49,95.49,0,0,1,224,128a95.49,95.49,0,0,1-36.61,68.61" fill="none"
+                  stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
               </svg>
             </div>
             <h3>{{ t.serviceConsultTitle }}</h3>
@@ -631,28 +458,15 @@ onUnmounted(() => {
       <div class="container">
         <h2>{{ t.portfolioTitle }}</h2>
         <div class="portfolio-list">
-          <div
-            v-for="project in t.portfolio"
-            :key="project.client"
-            class="portfolio-card"
-          >
+          <div v-for="project in t.portfolio" :key="project.client" class="portfolio-card">
             <div class="portfolio-logo-wrapper">
-              <img
-                :src="project.logo"
-                :alt="'Logo ' + project.client"
-                class="portfolio-logo"
-              />
+              <img :src="project.logo" :alt="'Logo ' + project.client" class="portfolio-logo" />
             </div>
             <div class="portfolio-info">
               <h3>{{ project.client }}</h3>
               <p>{{ project.description }}</p>
-              <a
-                v-if="project.link"
-                :href="project.link"
-                target="_blank"
-                class="portfolio-link"
-                >{{ project.linkText }} &rarr;</a
-              >
+              <a v-if="project.link" :href="project.link" target="_blank" class="portfolio-link">{{ project.linkText }}
+                &rarr;</a>
               <span v-else class="portfolio-tag">{{ project.linkText }}</span>
             </div>
           </div>
@@ -677,46 +491,35 @@ onUnmounted(() => {
     </div>
   </footer>
 
-  <div
-    v-if="isContactFormOpen"
-    class="contact-form-overlay"
-    @click.self="closeContactForm"
-  >
+  <div v-if="isContactFormOpen" class="contact-form-overlay" @click.self="closeContactForm">
     <div class="contact-form-modal">
-      <button
-        @click="closeContactForm"
-        class="close-modal-btn"
-        aria-label="Fechar formulário"
-      >
+      <button @click="closeContactForm" class="close-modal-btn" aria-label="Fechar formulário">
         &times;
       </button>
       <h3>{{ t.modalTitle }}</h3>
       <p>{{ t.modalText }}</p>
-      <form
-        action="mailto:contato@cdmti.com.br"
-        method="post"
-        enctype="text/plain"
-      >
+      <form action="mailto:contato@cdmti.com.br" method="post" enctype="text/plain">
         <div class="form-group">
-          <label for="fullName">{{ t.modalName }}</label>
-          <input type="text" id="fullName" name="Nome" required />
+          <label for="fullName" class="sr-only">{{ t.modalName }}</label>
+          <input type="text" id="fullName" name="Nome" :placeholder="t.modalName" required />
         </div>
         <div class="form-group">
-          <label for="email">{{ t.modalEmail }}</label>
-          <input type="email" id="email" name="Email" required />
+          <label for="email" class="sr-only">{{ t.modalEmail }}</label>
+          <input type="email" id="email" name="Email" :placeholder="t.modalEmail" required />
         </div>
         <div class="form-group">
-          <label for="phone">{{ t.modalPhone }}</label>
-          <input type="tel" id="phone" name="Telefone" required />
+          <label for="phone" class="sr-only">{{ t.modalPhone }}</label>
+          <input type="tel" id="phone" name="Telefone" :placeholder="t.modalPhone" required />
         </div>
         <div class="form-group">
-          <label for="message">{{ t.modalMessage }}</label>
-          <textarea id="message" name="Mensagem" rows="4"></textarea>
+          <label for="message" class="sr-only">{{ t.modalMessage }}</label>
+          <textarea id="message" name="Mensagem" rows="3" :placeholder="t.modalMessage"></textarea>
         </div>
         <button type="submit" class="cta-button">{{ t.modalSend }}</button>
       </form>
     </div>
   </div>
+
 
   <transition name="cta-popup-fade">
     <div v-if="isCtaPopupVisible" class="cta-popup">
@@ -724,11 +527,7 @@ onUnmounted(() => {
         <span class="cta-popup-icon">💬</span>
         <span class="cta-popup-text">{{ t.ctaPopupText }}</span>
       </a>
-      <button
-        @click="handleCtaInteraction"
-        class="cta-popup-close"
-        aria-label="Fechar"
-      >
+      <button @click="handleCtaInteraction" class="cta-popup-close" aria-label="Fechar">
         &times;
       </button>
     </div>
@@ -739,6 +538,7 @@ onUnmounted(() => {
 #header {
   transition: box-shadow 0.3s ease-in-out;
 }
+
 #header.scrolled {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }

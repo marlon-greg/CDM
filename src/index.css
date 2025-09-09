@@ -1,4 +1,6 @@
-/* --- Variáveis CSS e Reset --- */
+/* ========================================================================
+   1. CONFIGURAÇÕES GLOBAIS E VARIÁVEIS DE TEMA
+   ======================================================================== */
 :root {
   --primary-dark: #3e4a59;
   --primary-accent: #2da9b0;
@@ -13,12 +15,13 @@
 html.dark {
   --primary-dark: #e0e0e0;
   --primary-accent: #4ecdc4;
-  --primary-light: #2c2c2c; /* Fundo principal de elementos como header */
+  --primary-light: #2c2c2c;
   --secondary-gray: #b0b0b0;
-  --background-color: #1e1e1e; /* Fundo geral da página */
+  --background-color: #1e1e1e;
   --shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* --- Reset e Estilos Base --- */
 * {
   margin: 0;
   padding: 0;
@@ -37,23 +40,35 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* --- Classes Utilitárias --- */
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* --- Barra Superior e Controles --- */
+/* Classe de acessibilidade para esconder elementos visualmente mas mantê-los para leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+/* ========================================================================
+   2. ESTRUTURA PRINCIPAL (TOP-BAR, HEADER, FOOTER)
+   ======================================================================== */
+
+/* --- Barra Superior --- */
 #top-bar {
   background-color: var(--primary-dark);
   padding: 8px 0;
   transition: background-color 0.3s ease;
-}
-
-html.dark #top-bar {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #3a3a3a;
 }
 
 #top-bar .container {
@@ -69,6 +84,28 @@ html.dark #top-bar {
   gap: 15px;
 }
 
+.social-follow-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary-light);
+  opacity: 0.9;
+}
+
+.social-media-bar {
+  display: flex;
+  gap: 25px;
+}
+
+.social-media-bar a:hover {
+  transform: translateY(-2px);
+}
+
+.social-media-bar img {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Controles (Idioma) --- */
 .controls-container {
   display: flex;
   align-items: center;
@@ -80,10 +117,6 @@ html.dark #top-bar {
   border: none;
   cursor: pointer;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-light);
 }
 
 .flag-icon {
@@ -98,16 +131,6 @@ html.dark #top-bar {
   transform: scale(1.1);
 }
 
-.theme-toggle {
-  font-size: 1.5rem;
-  width: 28px;
-  text-align: center;
-}
-
-html.dark .theme-toggle {
-  color: var(--primary-dark);
-}
-
 /* --- Cabeçalho e Navegação --- */
 #header {
   width: 100%;
@@ -118,12 +141,6 @@ html.dark .theme-toggle {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-html.dark #header {
-  background-color: rgba(44, 44, 44, 0.8);
-  box-shadow: var(--shadow);
-}
-
-/* --- Comportamento Sticky Apenas para Desktop --- */
 @media (min-width: 769px) {
   #header {
     position: sticky;
@@ -177,77 +194,27 @@ html.dark #header {
   width: 100%;
 }
 
-/* --- Seção Hero --- */
-#hero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 80vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop")
-      no-repeat center center/cover;
-  color: #ffffff;
-  padding: 40px 20px;
+/* --- Menu Hambúrguer (Base para Desktop) --- */
+.hamburger {
+  display: none; /* CORREÇÃO: Esconde o botão por padrão */
 }
 
-.hero-content {
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#hero h1,
-#hero .subtitle {
-  color: #ffffff !important;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
-
-.hero-content h1 {
-  font-family: var(--heading-font);
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  white-space: nowrap;
-}
-
-.hero-content .subtitle {
-  font-size: 1.25rem;
-  font-weight: 400;
-  margin-bottom: 2rem;
-  white-space: nowrap;
-}
-
-.cta-button {
-  display: inline-block;
-  background-color: var(--primary-accent);
+/* --- Rodapé --- */
+footer {
+  background-color: var(--primary-dark);
   color: var(--primary-light);
-  padding: 12px 30px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: transform 0.3s ease, background-color 0.3s ease,
-    box-shadow 0.3s ease;
-  box-shadow: 0 4px 10px rgba(45, 169, 176, 0.4);
-  border: none;
+  padding: 20px 0;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-html.dark .cta-button {
-  color: #1e1e1e;
-}
+/* ========================================================================
+   3. SEÇÕES DE CONTEÚDO (HERO, ABOUT, SERVICES, ETC.)
+   ======================================================================== */
 
-.cta-button:hover {
-  background-color: #268d92;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(45, 169, 176, 0.5);
-}
-
-/* --- Estilização Geral das Seções --- */
+/* --- Estilo Geral das Seções --- */
 section {
   padding: 80px 0;
-  transition: background-color 0.3s ease;
 }
 
 section h2 {
@@ -258,7 +225,6 @@ section h2 {
   margin-bottom: 50px;
   position: relative;
   color: var(--primary-dark);
-  transition: color 0.3s ease;
 }
 
 section h2::after {
@@ -273,23 +239,63 @@ section h2::after {
   border-radius: 2px;
 }
 
-/* --- Seção Sobre --- */
+/* --- Seção Hero --- */
+#hero {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  min-height: 80vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop")
+      no-repeat center center/cover;
+  color: #ffffff;
+  padding: 40px 20px;
+}
+
+.hero-content {
+  max-width: 800px;
+  display: flex; /* ADICIONADO */
+  flex-direction: column; /* ADICIONADO */
+  align-items: center; /* ADICIONADO */
+}
+
+#hero h1,
+#hero .subtitle {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hero-content h1 {
+  font-family: var(--heading-font);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  white-space: nowrap; /* REINTRODUZIDO */
+  font-size: clamp(2.5rem, 5vw, 3rem); 
+}
+
+.hero-content .subtitle {
+  font-weight: 400;
+  margin-bottom: 2rem;
+  white-space: nowrap; /* REINTRODUZIDO */
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
+}
+
+/* --- Seção Sobre e Fundadores --- */
 #about {
   background-color: var(--primary-light);
 }
 
 #about p {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
   text-align: center;
   font-size: 1.1rem;
   color: var(--secondary-gray);
-  transition: color 0.3s ease;
 }
 
 #about .about-logo-container {
   text-align: center;
-  margin: 20px 0 30px;
+  margin-bottom: 30px;
 }
 
 #about .about-logo {
@@ -298,30 +304,8 @@ section h2::after {
   opacity: 0.8;
 }
 
-/* --- Seção Equipe/Fundadores (do Sobre.vue) --- */
 #about .team-section {
   padding-top: 60px;
-}
-#about .section-title {
-  font-family: var(--heading-font);
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 50px;
-  position: relative;
-  color: var(--primary-dark);
-}
-
-#about .section-title::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background-color: var(--primary-accent);
-  border-radius: 2px;
 }
 
 #about .team-grid {
@@ -332,19 +316,8 @@ section h2::after {
 }
 
 #about .team-member-card {
-  background-color: var(--primary-light);
-  border-radius: 15px;
-  box-shadow: var(--shadow);
-  padding: 25px;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease,
-    background-color 0.3s ease;
-}
-
-html.dark #about .team-member-card {
-  background-color: #3a3a3a;
 }
 
 #about .team-member-card:hover {
@@ -365,10 +338,6 @@ html.dark #about .team-member-card {
   transition: border-color 0.3s ease;
 }
 
-html.dark #about .member-photo {
-  border-color: #4a4a4a;
-}
-
 #about .member-name {
   font-size: 1.4rem;
   color: var(--primary-dark);
@@ -387,14 +356,16 @@ html.dark #about .member-photo {
   gap: 12px;
 }
 
+#about .detail-item + .detail-item {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eeeeee;
+}
+
 #about .icon-img {
   width: 24px;
   height: 24px;
-  flex-shrink: 0; /* Impede que o ícone seja espremido */
-}
-
-html.dark #about .icon-img {
-  filter: invert(1);
+  flex-shrink: 0;
 }
 
 #about .detail-item span {
@@ -402,35 +373,10 @@ html.dark #about .icon-img {
   color: var(--secondary-gray);
 }
 
-/* Ajuste para ícones na seção Sobre em telas menores */
-@media (max-width: 768px) {
-  #about .detail-item {
-    gap: 10px; /* Reduz o espaçamento entre ícone e texto */
-  }
-  #about .icon-img {
-    width: 20px; /* Diminui o tamanho do ícone */
-    height: 20px;
-  }
-}
-
-#about .detail-item + .detail-item {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eeeeee;
-}
-
-html.dark #about .detail-item + .detail-item {
-  border-top-color: #4a4a4a;
-}
-
 #about .member-socials {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #eeeeee;
-}
-
-html.dark #about .member-socials {
-  border-top-color: #4a4a4a;
 }
 
 #about .social-link {
@@ -449,6 +395,13 @@ html.dark #about .member-socials {
   height: 38px;
 }
 
+/* --- Seção Serviços --- */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
 /* --- Seção Portfólio --- */
 #portfolio {
   background-color: var(--primary-light);
@@ -460,106 +413,6 @@ html.dark #about .member-socials {
   gap: 40px;
 }
 
-.portfolio-card {
-  display: flex;
-  gap: 30px;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: var(--shadow);
-  align-items: center;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-html.dark .portfolio-card {
-  background-color: #3a3a3a;
-}
-
-.portfolio-logo-wrapper {
-  flex-shrink: 0;
-}
-
-.portfolio-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  object-fit: contain;
-  background-color: #f8f9fa;
-  padding: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.portfolio-info h3 {
-  font-family: var(--heading-font);
-  font-size: 1.5rem;
-  color: var(--primary-dark);
-  margin-bottom: 10px;
-}
-
-.portfolio-info p {
-  color: var(--secondary-gray);
-  margin-bottom: 20px;
-}
-
-.portfolio-link,
-.portfolio-tag {
-  font-weight: 600;
-  color: var(--primary-accent);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.portfolio-link:hover {
-  color: #268d92;
-  text-decoration: underline;
-}
-
-/* --- Seção Serviços --- */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.service-card {
-  background-color: var(--primary-light);
-  padding: 40px 30px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: var(--shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease,
-    background-color 0.3s ease;
-}
-
-html.dark .service-card {
-  background-color: #3a3a3a;
-}
-
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.service-icon {
-  margin-bottom: 20px;
-  color: var(--primary-accent);
-}
-
-.service-icon svg {
-  stroke-width: 12;
-}
-
-.service-card h3 {
-  font-family: var(--heading-font);
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-}
-
-.service-card p {
-  color: var(--secondary-gray);
-  font-size: 0.95rem;
-}
-
 /* --- Seção Contato --- */
 #contact {
   text-align: center;
@@ -567,65 +420,82 @@ html.dark .service-card {
 
 #contact p {
   max-width: 600px;
-  margin: 0 auto 30px auto;
+  margin: 0 auto 30px;
   font-size: 1.1rem;
   color: var(--secondary-gray);
 }
 
-/* --- Rodapé --- */
-footer {
-  background-color: var(--primary-dark);
+/* ========================================================================
+   4. COMPONENTES (Botões, Cards, Modal, Popup)
+   ======================================================================== */
+
+/* --- Botão CTA (Call to Action) --- */
+.cta-button {
+  display: inline-block;
+  background-color: var(--primary-accent);
   color: var(--primary-light);
-  padding: 20px 0;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(45, 169, 176, 0.4);
+  border: none;
+  cursor: pointer;
 }
 
-html.dark footer {
-  background-color: #1e1e1e;
-  color: var(--primary-dark);
-  border-top: 1px solid #3a3a3a;
+.cta-button:hover {
+  background-color: #268d92;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(45, 169, 176, 0.5);
 }
 
-/* --- Modal do Formulário de Contato --- */
+/* --- Estilos Gerais de Cards --- */
+.team-member-card, .service-card, .portfolio-card {
+  background-color: var(--primary-light);
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  text-align: center;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.service-card { padding: 40px 30px; }
+.portfolio-card { display: flex; gap: 30px; align-items: center; }
+
+.service-icon { margin-bottom: 20px; color: var(--primary-accent); }
+.service-icon svg { stroke-width: 12; }
+.service-card h3 { font-family: var(--heading-font); font-size: 1.5rem; margin-bottom: 15px; }
+.service-card p { color: var(--secondary-gray); font-size: 0.95rem; }
+
+/* --- Modal de Contato (AJUSTADO PARA SER MAIS COMPACTO) --- */
 .contact-form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
+  align-items: center; /* Centraliza verticalmente agora que o conteúdo é menor */
   z-index: 2000;
   backdrop-filter: blur(5px);
-  /* CORREÇÃO PARA CELULAR */
-  padding: 20px 0;
-  overflow-y: auto;
+  padding: 20px;
 }
 
 .contact-form-modal {
   background-color: var(--primary-light);
-  padding: 40px;
+  padding: 35px; /* Padding ligeiramente reduzido */
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  width: 90%;
+  width: 100%;
   max-width: 500px;
   position: relative;
   animation: slide-down 0.4s ease-out;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  /* CORREÇÃO PARA CELULAR */
-  margin: auto; /* Centraliza verticalmente dentro do overlay com scroll */
-}
-
-@keyframes slide-down {
-  from {
-    transform: translateY(-30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .close-modal-btn {
@@ -647,42 +517,33 @@ html.dark footer {
 
 .contact-form-modal h3 {
   font-family: var(--heading-font);
-  font-size: 2rem;
+  font-size: 1.8rem; /* Fonte ligeiramente reduzida */
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Margem reduzida */
   color: var(--primary-dark);
 }
 
 .contact-form-modal p {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 25px; /* Margem reduzida */
   color: var(--secondary-gray);
+  font-size: 0.95rem;
 }
 
 .form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--primary-dark);
+  margin-bottom: 15px; /* Margem entre os campos reduzida */
 }
 
 .form-group input,
 .form-group textarea {
+  box-sizing: border-box; 
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-family: var(--body-font);
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease,
-    background-color 0.3s ease, color 0.3s ease;
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
@@ -694,60 +555,13 @@ html.dark footer {
 
 .contact-form-modal .cta-button {
   width: 100%;
-  border: none;
-  cursor: pointer;
+  margin-top: 5px; /* Pequena margem adicionada acima do botão */
 }
 
-footer .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
 
-.footer-socials {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.social-follow-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--primary-light);
-  opacity: 0.9;
-}
-
-html.dark .social-follow-text {
-  color: var(--primary-dark);
-}
-
-.social-media-bar {
-  display: flex;
-  gap: 25px;
-}
-
-.social-media-bar a {
-  opacity: 1;
-  transition: transform 0.3s ease;
-}
-
-.social-media-bar a:hover {
-  transform: translateY(-2px);
-}
-
-.social-media-bar img {
-  width: 20px;
-  height: 20px;
-  filter: none !important;
-}
-
-/* --- Chamariz (CTA Popup) --- */
+/* --- Popup de CTA --- */
 .cta-popup {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+  position: fixed; bottom: 30px; right: 30px;
   z-index: 1500;
   background-color: var(--primary-accent);
   color: var(--primary-light);
@@ -757,11 +571,7 @@ html.dark .social-follow-text {
   align-items: center;
   padding: 12px 15px 12px 20px;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-html.dark .cta-popup {
-  color: #1e1e1e;
+  transition: transform 0.3s ease;
 }
 
 .cta-popup:hover {
@@ -802,7 +612,14 @@ html.dark .cta-popup {
   opacity: 1;
 }
 
-/* --- Animações de Rolagem --- */
+/* ========================================================================
+   5. ANIMAÇÕES E EFEITOS
+   ======================================================================== */
+@keyframes slide-down {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .fade-in {
   opacity: 0;
   transform: translateY(20px);
@@ -814,7 +631,6 @@ html.dark .cta-popup {
   transform: translateY(0);
 }
 
-/* Animação para o CTA Popup */
 .cta-popup-fade-enter-active,
 .cta-popup-fade-leave-active {
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -826,146 +642,77 @@ html.dark .cta-popup {
   transform: translateY(20px);
 }
 
-/* --- Menu Hambúrguer Responsivo --- */
-.hamburger {
-  display: none;
-  cursor: pointer;
-  background: none;
-  border: none;
-  z-index: 1001;
-}
 
-.hamburger .line {
-  display: block;
-  width: 25px;
-  height: 3px;
-  margin: 5px auto;
-  background-color: var(--primary-dark);
-  transition: all 0.3s ease-in-out;
+/* ========================================================================
+   6. ADAPTAÇÕES PARA MODO ESCURO (DARK MODE)
+   ======================================================================== */
+html.dark #top-bar { background-color: #1e1e1e; border-bottom: 1px solid #3a3a3a; }
+html.dark #header { background-color: rgba(44, 44, 44, 0.8); box-shadow: var(--shadow); }
+html.dark .cta-button { color: #1e1e1e; }
+html.dark footer { 
+  background-color: #1e1e1e; 
+  color: var(--primary-dark); /* CORREÇÃO: Garante o texto claro no rodapé escuro */
+  border-top: 1px solid #3a3a3a; 
 }
+html.dark .social-follow-text { color: var(--primary-dark); }
+html.dark #about .member-photo { border-color: #4a4a4a; }
+html.dark #about .detail-item + .detail-item,
+html.dark #about .member-socials { border-top-color: #4a4a4a; }
+html.dark #about .icon-img { filter: invert(1); }
+html.dark .team-member-card,
+html.dark .service-card,
+html.dark .portfolio-card { background-color: #3a3a3a; }
+html.dark .contact-form-modal { background-color: #3a3a3a; }
+html.dark .form-group input,
+html.dark .form-group textarea { background-color: #4a4a4a; border-color: #5a5a5a; color: var(--primary-dark); }
+html.dark .form-group input:focus,
+html.dark .form-group textarea:focus { border-color: var(--primary-accent); box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.3); }
+html.dark .close-modal-btn { color: var(--secondary-gray); }
+html.dark .cta-popup { color: #1e1e1e; }
 
-.hamburger.is-active .line:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
 
-.hamburger.is-active .line:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.is-active .line:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
-/* --- Media Queries (Responsividade) --- */
+/* ========================================================================
+   7. MEDIA QUERIES (RESPONSIVIDADE)
+   ======================================================================== */
 @media (max-width: 768px) {
-  /* CORREÇÃO: Impede a rolagem horizontal apenas no celular */
-  html,
-  body {
-    overflow-x: hidden;
-  }
+  /* --- Ajustes Gerais --- */
+  html, body { overflow-x: hidden; }
+  section h2 { font-size: 2rem; }
 
-  #top-bar .container {
-    flex-direction: column;
-    gap: 8px;
-    padding: 8px 15px;
-  }
+  /* --- Estrutura --- */
+  #top-bar .container { flex-direction: column; gap: 8px; padding: 8px 15px; }
+  .top-bar-left, .controls-container { width: 100%; justify-content: center; }
 
-  .top-bar-left,
-  .controls-container {
-    width: 100%;
-    justify-content: center;
+  /* --- Menu Hambúrguer --- */
+  .hamburger { 
+    display: block; 
+    cursor: pointer; 
+    background: none; 
+    border: none; 
+    z-index: 1001; 
   }
-  .top-bar-left {
-    order: 2;
-  }
-  .controls-container {
-    order: 1;
-  }
+  .hamburger .line { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--primary-dark); transition: all 0.3s ease-in-out; }
+  .hamburger.is-active .line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.is-active .line:nth-child(2) { opacity: 0; }
+  .hamburger.is-active .line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+  .nav-links { position: fixed; top: 0; right: -100%; width: 60%; height: 100vh; background-color: var(--primary-light); flex-direction: column; justify-content: center; align-items: center; gap: 40px; transition: right 0.4s ease-in-out; box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); }
+  .nav-links.nav-active { right: 0; }
 
-  .social-media-bar {
-    gap: 15px;
-  }
-
-  .hero-content h1 {
-    font-size: 2.5rem;
-    white-space: normal;
-  }
-
+  /* --- Seções e Componentes --- */
+  .hero-content h1,
   .hero-content .subtitle {
-    font-size: 1.1rem;
-    white-space: normal;
+    white-space: normal; /* Permite a quebra de linha no mobile */
   }
-
-  .portfolio-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  footer .container {
-    justify-content: center;
-    text-align: center;
-  }
-
-  section h2 {
-    font-size: 2rem;
-  }
-
-  .hamburger {
-    display: block;
-  }
-
-  .nav-links {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 60%;
-    height: 100vh;
-    background-color: var(--primary-light);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
-    transition: right 0.4s ease-in-out, background-color 0.3s ease;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-links.nav-active {
-    right: 0;
-  }
-
-  .contact-form-modal {
-    width: 95%;
+  
+  .portfolio-card { flex-direction: column; text-align: center; }
+  #about .icon-img { width: 20px; height: 20px; }
+  
+  .contact-form-modal { 
+    width: 95%; 
     padding: 25px;
-    max-height: 90vh; /* Garante que o modal não seja maior que a tela */
   }
 
   .contact-form-modal h3 {
-    font-size: 1.5rem; /* Reduz o título para caber melhor */
+    font-size: 1.5rem;
   }
-}
-
-/* --- Adaptação para Modo Escuro (Dark Mode) --- */
-html.dark .logo-dark-mode-adapt {
-  filter: invert(1) hue-rotate(180deg);
-}
-
-html.dark .contact-form-modal {
-  background-color: #3a3a3a;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-html.dark .form-group input,
-html.dark .form-group textarea {
-  background-color: #4a4a4a;
-  border-color: #5a5a5a;
-}
-
-html.dark .form-group input:focus,
-html.dark .form-group textarea:focus {
-  border-color: var(--primary-accent);
-  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.3);
-}
-
-html.dark .close-modal-btn {
-  color: var(--secondary-gray);
 }
