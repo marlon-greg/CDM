@@ -196,7 +196,7 @@ body {
 
 /* --- Menu Hambúrguer (Base para Desktop) --- */
 .hamburger {
-  display: none; /* CORREÇÃO: Esconde o botão por padrão */
+  display: none;
 }
 
 /* --- Rodapé --- */
@@ -254,9 +254,9 @@ section h2::after {
 
 .hero-content {
   max-width: 800px;
-  display: flex; /* ADICIONADO */
-  flex-direction: column; /* ADICIONADO */
-  align-items: center; /* ADICIONADO */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #hero h1,
@@ -269,14 +269,14 @@ section h2::after {
   font-family: var(--heading-font);
   font-weight: 700;
   margin-bottom: 1rem;
-  white-space: nowrap; /* REINTRODUZIDO */
+  white-space: nowrap;
   font-size: clamp(2.5rem, 5vw, 3rem); 
 }
 
 .hero-content .subtitle {
   font-weight: 400;
   margin-bottom: 2rem;
-  white-space: nowrap; /* REINTRODUZIDO */
+  white-space: nowrap;
   font-size: clamp(1.1rem, 2vw, 1.25rem);
 }
 
@@ -651,7 +651,7 @@ html.dark #header { background-color: rgba(44, 44, 44, 0.8); box-shadow: var(--s
 html.dark .cta-button { color: #1e1e1e; }
 html.dark footer { 
   background-color: #1e1e1e; 
-  color: var(--primary-dark); /* CORREÇÃO: Garante o texto claro no rodapé escuro */
+  color: var(--primary-dark);
   border-top: 1px solid #3a3a3a; 
 }
 html.dark .social-follow-text { color: var(--primary-dark); }
@@ -695,9 +695,15 @@ html.dark .cta-popup { color: #1e1e1e; }
   .hamburger.is-active .line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
   .hamburger.is-active .line:nth-child(2) { opacity: 0; }
   .hamburger.is-active .line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+  
   .nav-links { position: fixed; top: 0; right: -100%; width: 60%; height: 100vh; background-color: var(--primary-light); flex-direction: column; justify-content: center; align-items: center; gap: 40px; transition: right 0.4s ease-in-out; box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); }
   .nav-links.nav-active { right: 0; }
 
+  /* --- AJUSTES DO MENU RESPONSIVO PARA MODO ESCURO --- */
+  html.dark .hamburger .line {
+    background-color: #ffffff; /* Ícone do menu/fechar fica branco */
+  }
+  
   /* --- Seções e Componentes --- */
   .hero-content h1,
   .hero-content .subtitle {
