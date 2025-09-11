@@ -700,7 +700,7 @@ html.dark .cta-popup { color: #1e1e1e; }
   .nav-links.nav-active { right: 0; }
 
   /* --- AJUSTES DO MENU RESPONSIVO PARA MODO ESCURO --- */
-  html.dark .hamburger .line {
+  html.dark #header .hamburger .line {
     background-color: #ffffff; /* Ícone do menu/fechar fica branco */
   }
   
